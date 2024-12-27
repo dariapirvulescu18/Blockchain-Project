@@ -2,7 +2,6 @@
     pragma solidity ^0.8.0;
 
     import "./Job.sol";
-    import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
     contract JobPlatform {
 
@@ -11,11 +10,6 @@
         
         event JobCreated(address jobAddress, address owner, string description, uint price);
         
-        AggregatorV3Interface internal priceFeed;
-
-        constructor() {
-            priceFeed = AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419); // ETH/USD feed
-        }
 
         function createJob(string memory _description, uint _price, uint numberOfDays) public payable {
             require(msg.value == _price, "Must fund job with exact price");
@@ -82,14 +76,4 @@
             return applicantJobs;
         }
 
-        function getJobPriceInUSD(address jobAddress) public view returns (uint) {
-            Job job = Job(jobAddress);
-            uint ethAmount = job.price();
-            (, int price,,,) = priceFeed.latestRoundData();
-            return convertETHtoUSD(ethAmount, price);
-        }
-
-        function convertETHtoUSD(uint ethAmount, int price) private pure returns (uint) {
-            return (ethAmount * uint(price)) / 1e8;
-        }
     }

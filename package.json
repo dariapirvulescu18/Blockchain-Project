@@ -1,9 +1,30 @@
 {
   "dependencies": {
     "@chainlink/contracts": "^1.3.0",
-    "hardhat": "^2.22.17"
+    "ethers": "^6.13.4",
+    "hardhat": "^2.22.17",
+    "react-scripts": "^5.0.1",
+    "react-router-dom": "^7.1.1"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0"
+  },
+  "scripts": {
+    "start": "node scripts/Start.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
