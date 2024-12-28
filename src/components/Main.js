@@ -3,7 +3,7 @@ import '../styles/Main.css'
 import React, { useState, useEffect} from 'react';
 import { useWeb3, useProvider, JobPlatformContract, useJobContract } from '../utils/Context';
 import { useNavigate } from 'react-router-dom';
-import { ethers, toBigInt } from 'ethers';
+import { ethers } from 'ethers';
 
 export const Main = () => {
   const navigate = useNavigate();
