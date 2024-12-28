@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider} from "react-router-dom"
 import { Web3Provider } from './utils/Context';
 import { useMemo } from 'react';
 import routes from "./routes/router"
+import './styles/global.css';
 
 const router = createBrowserRouter(routes)
 

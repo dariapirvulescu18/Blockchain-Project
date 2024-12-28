@@ -1,14 +1,25 @@
 require("@nomicfoundation/hardhat-toolbox");
 
-
 module.exports = {
-  solidity: "0.8.19",
   networks: {
-    localhost: {
-      url: "http://127.0.0.1:8545"
+    hardhat: {
+      chainId: 31337,
+      mining: {
+        interval: 100 // ms
+      }
     },
+    localhost: {
+      chainId: 31337,
+      url: "http://127.0.0.1:8545"
+    }
   },
-  paths: {
-    artifacts: './src/artifacts',
-  },
+  solidity: {
+    version: "0.8.24",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  }
 };

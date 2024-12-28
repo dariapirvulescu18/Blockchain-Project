@@ -1,14 +1,11 @@
-const hre = require("hardhat");
 const fs = require('fs');
 const path = require('path');
 
 async function main() {
     // Get the contract factory
-    const JobPlatform = await hre.ethers.getContractFactory("JobPlatform");
+    const JobPlatform = await ethers.getContractFactory("JobPlatform");
     
-    // Deploy the contract
     const jobPlatform = await JobPlatform.deploy();
-    await jobPlatform.waitForDeployment();
     
     // Get the contract address
     const contractAddress = await jobPlatform.getAddress();
@@ -17,7 +14,6 @@ async function main() {
     // Prepare the address data
     const addressData = {
         address: contractAddress,
-        network: hre.network.name
     };
 
     // Write to src directory so frontend can access it

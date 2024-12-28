@@ -11,10 +11,9 @@
         event JobCreated(address jobAddress, address owner, string description, uint price);
         
 
-        function createJob(string memory _description, uint _price, uint numberOfDays) public payable {
-            require(msg.value == _price, "Must fund job with exact price");
+        function createJob(string memory _description, uint _price, uint numberOfDays) public {
             
-            Job newJob = new Job{value: msg.value}(
+            Job newJob = new Job(
                 msg.sender,
                 _description,
                 _price,
@@ -34,14 +33,14 @@
         function getPendingJobs() public view returns (Job[] memory) {
             uint count = 0;
             for (uint i = 0; i < jobs.length; i++) {
-                if (jobs[i].status() == Job.Status.Pending) {
+                if (jobs[i].getStatus() == Job.Status.Pending) {
                     count++;
                 }
             }
             Job[] memory pendingJobs = new Job[](count);
             uint currentIndex = 0;
             for (uint i = 0; i < jobs.length; i++) {
-                if (jobs[i].status() == Job.Status.Pending) {
+                if (jobs[i].getStatus() == Job.Status.Pending) {
                     pendingJobs[currentIndex] = jobs[i];
                     currentIndex++;
                 }
@@ -57,7 +56,7 @@
             // First count matching jobs
             uint count = 0;
             for (uint i = 0; i < jobs.length; i++) {
-                if (jobs[i].selectedApplicant() == applicant && jobs[i].status() == Job.Status.Completed) {
+                if (jobs[i].getSelectedApplicant() == applicant && jobs[i].getStatus() == Job.Status.Completed) {
                     count++;
                 }
             }
@@ -68,7 +67,7 @@
             
             // Fill array using index assignment
             for (uint i = 0; i < jobs.length; i++) {
-                if (jobs[i].selectedApplicant() == applicant) {
+                if (jobs[i].getSelectedApplicant() == applicant) {
                     applicantJobs[currentIndex] = jobs[i];
                     currentIndex++;
                 }

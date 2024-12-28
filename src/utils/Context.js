@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import JobPlatformArtifact from '../artifacts/contracts/JobPlatform.sol/JobPlatform.json';
+import JobArtifact from '../artifacts/contracts/Job.sol/Job.json';
 // import contractAddress from '../contracts/contract-address.json';
 
 const Web3Context = createContext(null);
@@ -105,6 +106,9 @@ import contractAddress from '../contractAddress.json';
 const jobPlatformAddress = contractAddress.address;
 export const JobPlatformContract = new ethers.Contract(jobPlatformAddress, JobPlatformArtifact.abi);
 
+export function useJobContract(jobAddress) {
+  return new ethers.Contract(jobAddress, JobArtifact.abi);
+}
 
 export function useWeb3() {
   const context = useContext(Web3Context);

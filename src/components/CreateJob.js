@@ -4,14 +4,14 @@ import { ethers } from 'ethers';
 
 export function CreateJob() {
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [days, setDays] = useState('');
+  const [price, setPrice] = useState(0);
+  const [days, setDays] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const { account } = useWeb3();
 
-  useEffect(() => {
-    console.log("account:", account);
-  }, [account]);
+  // useEffect(() => {
+  //   console.log("account:", account);
+  // }, [account]);
 
   const createJob = async (e) => {
     e.preventDefault();
@@ -30,14 +30,12 @@ export function CreateJob() {
       const tx = await connectedContract.createJob(
         description,
         ethers.parseEther(price.toString()),
-        parseInt(days),
-        { value: ethers.parseEther(price.toString()) } 
+        parseInt(days), 
       );
-      await tx.wait();
       
       setDescription('');
-      setPrice('');
-      setDays('');
+      setPrice(0);
+      setDays(0);
     } catch (error) {
       console.error("Failed to create job:", error);
     } finally {
@@ -60,7 +58,7 @@ export function CreateJob() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             type="number"
-            step="0.001"
+            step="1"
             min="0"
             required
           />

@@ -1,9 +1,9 @@
-// import '../styles/Main.css'
+import '../styles/Main.css'
 
 import React, { useState, useEffect} from 'react';
-import { useWeb3, useProvider } from '../utils/Context';
+import { useWeb3, useProvider, JobPlatformContract, useJobContract } from '../utils/Context';
 import { useNavigate } from 'react-router-dom';
-import { ethers } from 'ethers';
+import { ethers, toBigInt } from 'ethers';
 
 export const Main = () => {
   const navigate = useNavigate();
@@ -11,6 +11,60 @@ export const Main = () => {
   const provider = useProvider();
   const [ethereumAddress, setEthereumAddress] = useState('');
   const [balance, setBalance] = useState('');
+  const [jobs, setJobs] = useState([]);
+
+  const [error, setError] = useState('');
+
+  const applyForJob = async (jobAddress) => {
+    try {
+      const _provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await _provider.getSigner();
+      const jobContract = useJobContract(jobAddress);
+      const connectedJobContract = jobContract.connect(signer);
+      const tx = await connectedJobContract.applyForJob();
+      await tx.wait();
+      setError(''); // Clear any previous errors
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      // Extract reason from error message
+      const reason = error.message.match(/reason="([^"]+)"/)?.[1] || error.message;
+      setError(reason);
+    }
+  }
+
+  const fundJob = async (jobAddress, price) => {
+    try {
+      const _provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await _provider.getSigner();
+      const jobContract = useJobContract(jobAddress);
+      const connectedJobContract = jobContract.connect(signer);
+      const tx = await connectedJobContract.fundJob({value: ethers.parseEther(price.toString())});
+      await tx.wait();
+      setError(''); // Clear any previous errors
+    } catch (error) {
+      console.error("Error funding job:", error);
+      // Extract reason from error message 
+      const reason = error.message.match(/reason="([^"]+)"/)?.[1] || error.message;
+      setError(reason);
+    }
+  }
+
+  // Error display component
+  const ErrorDisplay = () => {
+    if (!error) return null;
+    return (
+      <div style={{
+        backgroundColor: '#ffebee',
+        color: '#c62828',
+        padding: '12px',
+        borderRadius: '4px',
+        marginBottom: '20px',
+        border: '1px solid #ef9a9a'
+      }}>
+        {error}
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (account) {
@@ -28,16 +82,80 @@ export const Main = () => {
       };
       
       fetchBalance();
+      const fetchJobs = async () => {
+        try {
+
+          const _provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await _provider.getSigner();
+
+          const connectedContract = JobPlatformContract.connect(signer);
+
+          const jobsAddresses = await connectedContract.getJobs();
+          
+          const fullJobs = [];
+
+          for (const jobAddress of jobsAddresses) {
+            const jobContract = useJobContract(jobAddress);
+            const connectedJobContract = jobContract.connect(signer);
+            const jobDetails = {
+              address: jobAddress,
+              owner: await connectedJobContract.getOwner(),
+              description: await connectedJobContract.getDescription(),
+              price: ethers.formatEther(await connectedJobContract.getPrice()),
+              numberOfDays: await connectedJobContract.getNumberOfDays(),
+              status: await connectedJobContract.getStatus(),
+              selectedApplicant: await connectedJobContract.getSelectedApplicant(),
+              applicants: await connectedJobContract.getApplicants()
+            };
+            fullJobs.push(jobDetails);
+          }
+
+          setJobs(fullJobs);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      };
+
+      fetchJobs();
+
+      console.log(account)
     }
   }, [account, provider]);
 
   return (
     <div className="App">
+      <ErrorDisplay />
       <div className="App-header">
-        <p>My Address: {ethereumAddress}</p>
-        <p>Balance: {balance} ETH</p>
-        <button onClick={()=>navigate('/jobs')}>View All Pending Jobs</button>
+        <div className="wallet-info">
+          <p><strong>My Address:</strong> {ethereumAddress}</p>
+          <p><strong>Balance:</strong> {balance} ETH</p>
+        </div>
         <button onClick={()=>navigate('/CreateJob')}>Create a Job</button>        
+      </div>
+      <div className="jobs-list">
+        {jobs.map((job, index) => (
+          <div key={job.address} className="job-card">
+            <h3>Job #{index + 1}</h3>
+            <p><strong>Contract Address:</strong> <span className="address">{job.address}</span></p>
+            <p><strong>Owner:</strong> <span className="address">{job.owner}</span></p>
+            <p><strong>Description:</strong> {job.description}</p>
+            <p><strong>Price:</strong> {job.price} ETH</p>
+            <p><strong>Duration:</strong> {job.numberOfDays} days</p>
+            <p><strong>Status:</strong> {['NotFunded', 'Pending', 'ApplicantSelected', 'Completed'][job.status]}</p>
+            <p><strong>Selected Applicant:</strong> <span className="address">{job.selectedApplicant}</span></p>
+            <p><strong>Number of Applicants:</strong> {job.applicants.length}</p>
+            <button 
+              onClick={() => applyForJob(job.address)}
+            >
+              Apply for Job
+            </button>
+            <button 
+              onClick={() => fundJob(job.address, job.price)}
+            >
+              Fund Job
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

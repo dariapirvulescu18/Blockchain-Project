@@ -3,18 +3,47 @@ pragma solidity ^0.8.0;
 
 contract Job {
     enum Status {
+        NotFunded,
         Pending,
         ApplicantSelected,
         Completed
     }
     
-    address public owner;
-    string public description;
-    uint public price;
-    uint public numberOfDays;
-    Status public status;
-    address public selectedApplicant;
-    address[] public applicants;
+    address private owner;
+    string private description;
+    uint private price;
+    uint private numberOfDays;
+    Status private status;
+    address private selectedApplicant;
+    address[] private applicants;
+
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+
+    function getDescription() public view returns (string memory) {
+        return description;
+    }
+
+    function getPrice() public view returns (uint) {
+        return price;
+    }
+
+    function getNumberOfDays() public view returns (uint) {
+        return numberOfDays;
+    }
+
+    function getStatus() public view returns (Status) {
+        return status;
+    }
+
+    function getSelectedApplicant() public view returns (address) {
+        return selectedApplicant;
+    }
+
+    function getApplicants() public view returns (address[] memory) {
+        return applicants;
+    }
     
     event Applied(address applicant);
     event ApplicantSelected(address applicant);
@@ -36,12 +65,17 @@ contract Job {
         string memory _description,
         uint _price,
         uint _numberOfDays
-    ) payable {
-        require(msg.value == _price, "Must fund job with exact price");
+    ){
         owner = _owner;
         description = _description;
         price = _price;
         numberOfDays = _numberOfDays;
+        status = Status.NotFunded;
+    }
+
+    function fundJob() public onlyOwner payable {
+        require(msg.value == price, "Must fund job with exact price");
+        require(status == Status.NotFunded, "Job is already funded");
         status = Status.Pending;
     }
     
@@ -77,10 +111,6 @@ contract Job {
         uint amount = price;
         payable(selectedApplicant).transfer(amount);
         emit PaymentWithdrawn(selectedApplicant, amount);
-    }
-    
-    function getApplicants() public view returns (address[] memory) {
-        return applicants;
     }
     
     function hasApplied(address applicant) internal view returns (bool) {
