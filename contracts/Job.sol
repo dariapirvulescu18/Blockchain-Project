@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract Job {
+    // TODO: Add status PaymentWithdrawn
     enum Status {
         NotFunded,
         Pending,
@@ -98,6 +99,7 @@ contract Job {
     }
     
     function completeJob() public onlyOwner {
+        // TODO: Add requirement that status is not already completed
         require(status == Status.ApplicantSelected, "No applicant selected");
         require(selectedApplicant != address(0), "No applicant selected");
         
@@ -106,12 +108,15 @@ contract Job {
     }
     
     function withdrawPayment() public onlySelectedApplicant {
+        // TODO: Add requirement that status is not already PaymentWithdrawn
         require(status == Status.Completed, "Job not completed");
         
         uint amount = price;
         payable(selectedApplicant).transfer(amount);
         emit PaymentWithdrawn(selectedApplicant, amount);
     }
+
+    // TODO: add external that checks if the job is in status PaymentWithdrawn
     
     function hasApplied(address applicant) internal view returns (bool) {
         for (uint i = 0; i < applicants.length; i++) {

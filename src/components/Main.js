@@ -49,6 +49,42 @@ export const Main = () => {
     }
   }
 
+  const withdrawPayment = async (jobAddress) => {
+    try {
+      const _provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await _provider.getSigner();
+      const jobContract = useJobContract(jobAddress);
+      const connectedJobContract = jobContract.connect(signer);
+      const tx = await connectedJobContract.withdrawPayment();
+      await tx.wait();
+      setError(''); // Clear any previous errors
+    }
+    catch (error) {
+      console.error("Error withdrawing payment:", error);
+      // Extract reason from error message 
+      const reason = error.message.match(/reason="([^"]+)"/)?.[1] || error.message;
+      setError(reason);
+    }
+  }
+
+  const completeJob = async (jobAddress) => {
+    try {
+      const _provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await _provider.getSigner();
+      const jobContract = useJobContract(jobAddress);
+      const connectedJobContract = jobContract.connect(signer);
+      const tx = await connectedJobContract.completeJob();
+      await tx.wait();
+      setError(''); // Clear any previous errors
+    }
+    catch (error) {
+      console.error("Error completing job:", error);
+      // Extract reason from error message 
+      const reason = error.message.match(/reason="([^"]+)"/)?.[1] || error.message;
+      setError(reason);
+    }
+  }
+
   // Error display component
   const ErrorDisplay = () => {
     if (!error) return null;
@@ -153,6 +189,21 @@ export const Main = () => {
               onClick={() => fundJob(job.address, job.price)}
             >
               Fund Job
+            </button>
+            <button 
+              onClick={() => navigate('/SelectApplicant', { state: { jobAddress: job.address } })}
+            >
+              Select Applicant
+            </button>
+            <button 
+              onClick={() => withdrawPayment(job.address)}
+            >
+              Withdraw Payment
+            </button>
+            <button 
+              onClick={() => completeJob(job.address)}
+            >
+              Complete Job
             </button>
           </div>
         ))}
