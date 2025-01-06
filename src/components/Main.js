@@ -158,7 +158,7 @@ export const Main = () => {
   }, [account, provider]);
 
   return (
-    <div className="App">
+    <div className="App" >
       <ErrorDisplay />
       <div className="App-header">
         <div className="wallet-info">

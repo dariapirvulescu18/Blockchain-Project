@@ -12,13 +12,12 @@ body {
   background: linear-gradient(100deg,  #1c1264,#6D46E7, #ef40b2);
 }
 
-/* Common container styles */
 .App {
   min-height: 100vh;
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-}
+} 
 
 .App-header {
   background-color: #121D33;
@@ -82,16 +81,16 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Form styles */
+
 .form-container {
   max-width: 600px;
   margin: 40px auto;
   padding: 30px;
-  background-color: #6041CA;
+  background-color:  #121D33;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid #6041CA;
-  color: #bf1313;
+  color: #bfabab;
 }
 
 .form-group {
@@ -102,15 +101,15 @@ button:disabled {
 
 input {
   padding: 12px;
-  border: 1px solid #6041CA;
+  border: 1px solid  #352C78;
   border-radius: 8px;
   font-size: 16px;
   background-color: #f1f5f9;
-  color: #6041CA;
+  color:  #352C78;
 }
 
 input:focus {
   outline: none;
   border-color: #6041CA;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
 }

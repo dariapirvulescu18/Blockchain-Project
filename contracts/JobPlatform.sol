@@ -66,6 +66,7 @@
             uint currentIndex = 0;
             
             // Fill array using index assignment
+            //TODO: replace jobs.length with count
             for (uint i = 0; i < jobs.length; i++) {
                 if (jobs[i].getSelectedApplicant() == applicant) {
                     applicantJobs[currentIndex] = jobs[i];

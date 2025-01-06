@@ -52,11 +52,11 @@ export const InspectAccount = () => {
     }, [accountAddress]);
 
     return (
-        <div>
+        <div className="inspect-account">
             {error && <p className="error">{error}</p>}
             <h1>User: {accountAddress}</h1>
             <h2>Applied Jobs:</h2>
-            <div className="jobs-list">
+            <div className='jobs-list'>
                 {appliedJobs.map((job, index) => (
                 <div key={job.address} className="job-card">
                     <h3>Job #{index + 1}</h3>
@@ -73,3 +73,4 @@ export const InspectAccount = () => {
     )
 }
 
+export default InspectAccount;

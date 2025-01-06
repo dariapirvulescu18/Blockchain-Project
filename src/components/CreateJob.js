@@ -44,9 +44,9 @@ export function CreateJob() {
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container ">
       <form onSubmit={createJob}>
-        <div className="form-group">
+        <div className="form-group ">
           <input
             placeholder="Job Description"
             value={description}
@@ -55,16 +55,16 @@ export function CreateJob() {
           />
           <input
             placeholder="Price (ETH)"
-            value={price}
+            value={price === 0 ? '' : price}
             onChange={(e) => setPrice(e.target.value)}
             type="number"
             step="1"
-            min="0"
+            min="1"
             required
           />
           <input
             placeholder="Duration (days)"
-            value={days}
+            value={days === 0 ? '' : days}
             onChange={(e) => setDays(e.target.value)}
             type="number"
             min="1"

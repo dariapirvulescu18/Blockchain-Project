@@ -1,7 +1,7 @@
 .jobs-list {
     padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 25px;
 }
   
@@ -10,7 +10,7 @@
     border-radius: 10px;
     padding: 20px;
     background: linear-gradient(100deg,  #d9d8df,#d9d5e4, #f2eaef);
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 4px rgb(255, 255, 255);
     transition: transform 0.2s, box-shadow 0.2s;
     min-width: 300px;
     
@@ -18,12 +18,12 @@
 .job-card .button-container {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px; /* Adjust as needed */
+    margin-top: 20px; 
 }
 
 .job-card .button-container button {
     flex: 1;
-    margin: 0 5px; /* Adjust as needed */
+    margin: 0 5px; 
 }
 .job-card:hover {
     transform: scale(1.01); 
@@ -71,4 +71,9 @@
     .job-card {
         min-width: unset;
     }
+}
+
+.create-job-page {
+    background-color: white !important;
+    padding: 20px; /* Optional: Add some padding */
 }
