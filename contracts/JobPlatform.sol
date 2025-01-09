@@ -39,13 +39,31 @@
             }
             Job[] memory pendingJobs = new Job[](count);
             uint currentIndex = 0;
-            for (uint i = 0; i < jobs.length; i++) {
+            for (uint i = 0; i < count; i++) {
                 if (jobs[i].getStatus() == Job.Status.Pending) {
                     pendingJobs[currentIndex] = jobs[i];
                     currentIndex++;
                 }
             }
             return pendingJobs;
+        }
+
+        function getPaymentWithdrownJobs() public view returns (Job[] memory){
+            uint count = 0;
+            for (uint i = 0; i < jobs.length; i++) {
+                if (jobs[i].isPaymentWithdrawn()) {
+                    count++;
+                }
+            }
+            Job[] memory paidJobs = new Job[](count);
+            uint currentIndex = 0;
+            for (uint i = 0; i < count; i++) {
+                if (jobs[i].isPaymentWithdrawn()) {
+                    paidJobs[currentIndex] = jobs[i];
+                    currentIndex++;
+                }
+            }
+            return paidJobs;
         }
         
         function getEmployerJobs(address employer) public view returns (Job[] memory) {
@@ -66,8 +84,7 @@
             uint currentIndex = 0;
             
             // Fill array using index assignment
-            //TODO: replace jobs.length with count
-            for (uint i = 0; i < jobs.length; i++) {
+            for (uint i = 0; i < count; i++) {
                 if (jobs[i].getSelectedApplicant() == applicant) {
                     applicantJobs[currentIndex] = jobs[i];
                     currentIndex++;

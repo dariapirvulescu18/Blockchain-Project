@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useWeb3, JobPlatformContract } from '../utils/Context';
 import { ethers } from 'ethers';
+import { useNavigate } from 'react-router-dom';
+import Path from '../routes/path';
 
 export function CreateJob() {
   const [description, setDescription] = useState('');
@@ -8,7 +10,7 @@ export function CreateJob() {
   const [days, setDays] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const { account } = useWeb3();
-
+  const navigate = useNavigate();
   // useEffect(() => {
   //   console.log("account:", account);
   // }, [account]);
@@ -32,10 +34,15 @@ export function CreateJob() {
         ethers.parseEther(price.toString()),
         parseInt(days), 
       );
-      
+
+      await tx.wait();
+
       setDescription('');
       setPrice(0);
       setDays(0);
+
+      navigate(Path.MAIN);
+      
     } catch (error) {
       console.error("Failed to create job:", error);
     } finally {

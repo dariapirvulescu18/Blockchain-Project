@@ -3,6 +3,7 @@ import React, { useState, useEffect} from 'react';
 import { useWeb3, useProvider, JobPlatformContract, useJobContract } from '../utils/Context';
 import { useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
+import Path from '../routes/path';
 
 export const Main = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export const Main = () => {
   const [ethereumAddress, setEthereumAddress] = useState('');
   const [balance, setBalance] = useState('');
   const [jobs, setJobs] = useState([]);
-
+  const [paidJobs, setPaidJobs] = useState([]);
   const [error, setError] = useState('');
 
   const applyForJob = async (jobAddress) => {
@@ -152,8 +153,21 @@ export const Main = () => {
       };
 
       fetchJobs();
-
-      console.log(account)
+      
+      const fetchPaidJobs = async () => {
+        try {
+          const _provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await _provider.getSigner();
+          const connectedContract = JobPlatformContract.connect(signer);
+          const paidJobs = await connectedContract.getPaymentWithdrownJobs();
+          setPaidJobs(paidJobs);
+        } catch (error) {
+          console.error("Error fetching paid jobs:", error);
+          setError(error.message);
+        }
+      };
+  
+      fetchPaidJobs();
     }
   }, [account, provider]);
 
@@ -177,7 +191,14 @@ export const Main = () => {
             </svg> Balance:</strong> {balance} ETH
           </p>
         </div>
+        <div className="button-logg">
         <button onClick={()=>navigate('/CreateJob')}>+ Create a Job</button>        
+        <button style={{backgroundColor:'#800000'}} onClick={() => navigate(Path.WELCOME)}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+          </svg> Connect with another account</button>
+        </div>
       </div>
       <div className="jobs-list">
         {jobs.map((job, index) => (
@@ -212,7 +233,7 @@ export const Main = () => {
               <path fill-rule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
               <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
               <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-              </svg> Status:</strong> {['NotFunded', 'Pending', 'ApplicantSelected', 'Completed'][job.status]}</p>
+              </svg> Status:</strong> {['NotFunded', 'Pending', 'ApplicantSelected', 'Completed','PaymentWithdrawn'][job.status]}</p>
             <p><strong>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-arms-up" viewBox="0 0 16 16">
               <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
@@ -223,7 +244,8 @@ export const Main = () => {
               <path d="M8.39 12.648a1 1 0 0 0-.015.18c0 .305.21.508.5.508.266 0 .492-.172.555-.477l.554-2.703h1.204c.421 0 .617-.234.617-.547 0-.312-.188-.53-.617-.53h-.985l.516-2.524h1.265c.43 0 .618-.227.618-.547 0-.313-.188-.524-.618-.524h-1.046l.476-2.304a1 1 0 0 0 .016-.164.51.51 0 0 0-.516-.516.54.54 0 0 0-.539.43l-.523 2.554H7.617l.477-2.304c.008-.04.015-.118.015-.164a.51.51 0 0 0-.523-.516.54.54 0 0 0-.531.43L6.53 5.484H5.414c-.43 0-.617.22-.617.532s.187.539.617.539h.906l-.515 2.523H4.609c-.421 0-.609.219-.609.531s.188.547.61.547h.976l-.516 2.492c-.008.04-.015.125-.015.18 0 .305.21.508.5.508.265 0 .492-.172.554-.477l.555-2.703h2.242zm-1-6.109h2.266l-.515 2.563H6.859l.532-2.563z"/>
               </svg> Number of Applicants:</strong> {job.applicants.length}</p>
               <div class="button-container">
-            <button 
+            {account !==job.owner &&  job.selectedApplicant ==='0x0000000000000000000000000000000000000000'&&(
+              <button 
               onClick={() => applyForJob(job.address)}
             >
              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-open" viewBox="0 0 16 16">
@@ -231,7 +253,10 @@ export const Main = () => {
              <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
              </svg> Apply for Job
             </button>
-            <button 
+            )}
+            
+            {account===job.owner &&(
+              <button 
               onClick={() => fundJob(job.address, job.price)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-piggy-bank" viewBox="0 0 16 16">
@@ -239,6 +264,8 @@ export const Main = () => {
             <path fill-rule="evenodd" d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069q0-.218-.02-.431c.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a1 1 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.74.74 0 0 0-.375.562c-.024.243.082.48.32.654a2 2 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595M2.516 6.26c.455-2.066 2.667-3.733 5.448-3.733 3.146 0 5.536 2.114 5.536 4.542 0 1.254-.624 2.41-1.67 3.248a.5.5 0 0 0-.165.535l.66 2.175h-.985l-.59-1.487a.5.5 0 0 0-.629-.288c-.661.23-1.39.359-2.157.359a6.6 6.6 0 0 1-2.157-.359.5.5 0 0 0-.635.304l-.525 1.471h-.979l.633-2.15a.5.5 0 0 0-.17-.534 4.65 4.65 0 0 1-1.284-1.541.5.5 0 0 0-.446-.275h-.56a.5.5 0 0 1-.492-.414l-.254-1.46h.933a.5.5 0 0 0 .488-.393m12.621-.857a.6.6 0 0 1-.098.21l-.044-.025c-.146-.09-.157-.175-.152-.223a.24.24 0 0 1 .117-.173c.049-.027.08-.021.113.012a.2.2 0 0 1 .064.199"/>
             </svg> Fund Job
             </button>
+            )}
+            
             <button 
               onClick={() => navigate('/SelectApplicant', { state: { jobAddress: job.address } })}
             >
@@ -247,25 +274,40 @@ export const Main = () => {
             <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
             </svg> View Applicants
             </button>
-            <button 
-              onClick={() => withdrawPayment(job.address)}
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
-            <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
-            <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
-            </svg> Withdraw Payment
-            </button>
-            <button 
+            {account === job.selectedApplicant && (
+              <button onClick={() => withdrawPayment(job.address)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash" viewBox="0 0 16 16">
+                  <path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z"/>
+                  <path d="M8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                  <path d="M1 13a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4H1z"/>
+                </svg> Withdraw Payment
+              </button>
+            )}
+            {account===job.owner &&(
+              <button 
               onClick={() => completeJob(job.address)}
             >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag-fill" viewBox="0 0 16 16">
             <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
             </svg> Complete Job
             </button>
+            )}
+            
           </div>
           </div>
         ))}
       </div>
+      <div>
+      <div className="paid-jobs-list">
+        {paidJobs.map((job, index) => (
+          <div key={job.address} className="paid-job-card">
+            <p>Job #{index + 1}</p>
+            <p>Address: {job.address}</p>
+          </div>
+         
+        ))}
+      </div>
+    </div>
     </div>
   );
 };

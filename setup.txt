@@ -1,0 +1,5 @@
+1. Se șterge tot ce înseamnă artifacts și cache
+2. ⁠npx hardhat compile
+3. ⁠se muta noul artifacts creat în src
+4. ⁠npm install
+5. ⁠npm start

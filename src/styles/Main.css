@@ -30,7 +30,24 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
-
+.button-logg {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.paid-jobs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .paid-job-card {
+    font-size: 0.8rem;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 4px;
+  }
 
 .job-card h1 {
     margin-bottom: 15px;
@@ -76,4 +93,64 @@
 .create-job-page {
     background-color: white !important;
     padding: 20px; /* Optional: Add some padding */
+}
+
+.inspect-account {
+    padding: 20px;
+   
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.inspect-account h1 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.inspect-account .jobs-list {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.inspect-account .job-card {
+    border: 1px solid #030056;
+    border-radius: 10px;
+    padding: 20px;
+    background: linear-gradient(100deg,  #d9d8df,#d9d5e4, #f2eaef);
+    box-shadow: 0 2px 4px rgb(255, 255, 255);
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-width: 300px;
+}
+
+.inspect-account .job-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inspect-account .job-card p {
+    margin: 8px 0;
+    word-break: break-all;
+    font-size: 0.9rem;
+    color: #28253b;
+}
+
+.inspect-account .job-card p strong {
+    color: #352C78;
+    font-weight: 600;
+}
+
+.inspect-account .job-card .address {
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
 }

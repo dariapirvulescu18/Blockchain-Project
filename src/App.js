@@ -4,13 +4,16 @@ import { useMemo } from 'react';
 import routes from "./routes/router"
 import './styles/global.css';
 
+
 const router = createBrowserRouter(routes)
 
 function App() {
     
     return (
         <Web3Provider>
+            
             {useMemo(() => (
+            
             <RouterProvider router={router} />)
             , [])}
         </Web3Provider>
