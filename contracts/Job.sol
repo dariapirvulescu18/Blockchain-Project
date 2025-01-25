@@ -49,7 +49,7 @@ contract Job {
     
     event Applied(address applicant);
     event ApplicantSelected(address applicant);
-    event JobCompleted(address applicant);
+    event JobCompleted(address applicant, address job);
     event PaymentWithdrawn(address to, uint amount);
     
     modifier onlyOwner() {
@@ -106,7 +106,7 @@ contract Job {
         require(selectedApplicant != address(0), "No applicant selected");
         
         status = Status.Completed;
-        emit JobCompleted(selectedApplicant);
+        emit JobCompleted(selectedApplicant, address(this));
     }
     
     function withdrawPayment() public onlySelectedApplicant {

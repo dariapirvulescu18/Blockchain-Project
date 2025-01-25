@@ -14,6 +14,7 @@ export const Main = () => {
   const [jobs, setJobs] = useState([]);
   const [paidJobs, setPaidJobs] = useState([]);
   const [error, setError] = useState('');
+  const [lastJobCreated, setLastJobCreated] = useState('')
 
   const applyForJob = async (jobAddress) => {
     try {
@@ -102,6 +103,22 @@ export const Main = () => {
     );
   }
 
+  const LastJobCreatedDisplay = () => {
+    if (!lastJobCreated) return null;
+    return (
+      <div style={{
+        backgroundColor: '#e8f5e9',
+        color: '#2e7d32',
+        padding: '12px',
+        borderRadius: '4px',
+        marginBottom: '20px',
+        border: '1px solid #a5d6a7'
+      }}>
+        {lastJobCreated}
+      </div>
+    );
+  }
+
   useEffect(() => {
     if (account) {
       setEthereumAddress(account);
@@ -133,6 +150,10 @@ export const Main = () => {
           for (const jobAddress of jobsAddresses) {
             const jobContract = useJobContract(jobAddress);
             const connectedJobContract = jobContract.connect(signer);
+            connectedJobContract.on('JobCompleted', async (applicant, jobAddress)  => {
+              const msg = "Job completed by " + applicant + " with address " + jobAddress;
+              setLastJobCreated(msg);
+            })
             const jobDetails = {
               address: jobAddress,
               owner: await connectedJobContract.getOwner(),
@@ -174,6 +195,7 @@ export const Main = () => {
   return (
     <div className="App" >
       <ErrorDisplay />
+      <LastJobCreatedDisplay />
       <div className="App-header">
         <div className="wallet-info">
           <h2>My Profile</h2>

@@ -71,7 +71,7 @@ export const InspectAccount = () => {
                             <p><strong>Description:</strong> {job.description}</p>
                             <p><strong>Price:</strong> {job.price} ETH</p>
                             <p><strong>Duration:</strong> {job.numberOfDays} days</p>
-                            <p><strong>Status:</strong> {['NotFunded', 'Pending', 'ApplicantSelected', 'Completed'][job.status]}</p>
+                            <p><strong>Status:</strong> {['NotFunded', 'Pending', 'ApplicantSelected', 'Completed', 'PaymentWithdrawn'][job.status]}</p>
                         </div>
                     ))}
                 </div>

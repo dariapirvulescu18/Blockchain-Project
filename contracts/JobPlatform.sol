@@ -74,7 +74,8 @@
             // First count matching jobs
             uint count = 0;
             for (uint i = 0; i < jobs.length; i++) {
-                if (jobs[i].getSelectedApplicant() == applicant && jobs[i].getStatus() == Job.Status.Completed) {
+                if (jobs[i].getSelectedApplicant() == applicant && (jobs[i].getStatus() == Job.Status.Completed ||
+                    jobs[i].getStatus() == Job.Status.PaymentWithdrawn)) {
                     count++;
                 }
             }
