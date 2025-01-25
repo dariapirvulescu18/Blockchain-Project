@@ -26,16 +26,24 @@ export function CreateJob() {
 
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
+
+      const feeData = await provider.getFeeData();
+
+      let gasPrice = feeData.gasPrice;
+      const gasPriceInEth = ethers.formatUnits(gasPrice, 'ether');
+      const userConfirmed = window.confirm("Do you want to create this job? Estimated gas cost: " + gasPriceInEth + " ETH");
       
       const connectedContract = JobPlatformContract.connect(signer);
+      
+      if(userConfirmed) {
+        const tx = await connectedContract.createJob(
+          description,
+          ethers.parseEther(price.toString()),
+          parseInt(days)
+        );
 
-      const tx = await connectedContract.createJob(
-        description,
-        ethers.parseEther(price.toString()),
-        parseInt(days), 
-      );
-
-      await tx.wait();
+        await tx.wait();
+      }
 
       setDescription('');
       setPrice(0);
