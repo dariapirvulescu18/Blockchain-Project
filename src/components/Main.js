@@ -177,17 +177,37 @@ export const Main = () => {
       
       const fetchPaidJobs = async () => {
         try {
+
           const _provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await _provider.getSigner();
+
           const connectedContract = JobPlatformContract.connect(signer);
-          const paidJobs = await connectedContract.getPaymentWithdrownJobs();
+
+          const jobsAddresses = await connectedContract.getPaymentWithdrownJobs();
+          
+          const paidJobs = [];
+
+          for (const jobAddress of jobsAddresses) {
+            const jobContract = useJobContract(jobAddress);
+            const connectedJobContract = jobContract.connect(signer);
+            const paidjobDetails = {
+              address: jobAddress,
+              owner: await connectedJobContract.getOwner(),
+              description: await connectedJobContract.getDescription(),
+              price: ethers.formatEther(await connectedJobContract.getPrice()),
+              numberOfDays: await connectedJobContract.getNumberOfDays(),
+              status: await connectedJobContract.getStatus(),
+              selectedApplicant: await connectedJobContract.getSelectedApplicant(),
+              applicants: await connectedJobContract.getApplicants()
+            };
+            paidJobs.push(paidjobDetails);
+          }
+
           setPaidJobs(paidJobs);
         } catch (error) {
-          console.error("Error fetching paid jobs:", error);
-          setError(error.message);
+          console.error("Error fetching jobs:", error);
         }
       };
-  
       fetchPaidJobs();
     }
   }, [account, provider]);
@@ -320,11 +340,16 @@ export const Main = () => {
         ))}
       </div>
       <div>
+        <h3>Payment Withdrawn job list:</h3>
       <div className="paid-jobs-list">
         {paidJobs.map((job, index) => (
           <div key={job.address} className="paid-job-card">
             <p>Job #{index + 1}</p>
             <p>Address: {job.address}</p>
+            <p>Description: {job.description}</p>
+            <p>Price: {job.price} ETH</p>
+            <p>Duration: {job.numberOfDays} days </p>
+            <p>Number of applicants: {job.applicants.length} </p>
           </div>
          
         ))}
