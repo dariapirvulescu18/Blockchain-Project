@@ -1,4 +1,1 @@
-# Proiect Blockchain - Platforma pentru Joburi
-Echipa nr. 3:
-- Apostol Alin-Constantin Grupa 351
-- Pirvulescu Daria-Maria Grupa 351
+***Skills Learned***:Blockchain development, Solidity smart contracts, Ethereum, Web3.js, React, decentralized applications
